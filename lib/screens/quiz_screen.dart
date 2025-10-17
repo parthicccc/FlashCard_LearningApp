@@ -76,7 +76,47 @@ class _QuizScreenState extends State<QuizScreen> {
       _selectedAnswer = answer;
       if (answer == correctAnswer) {
         _score += currentQuestion['points'] as int;
+        _showFloatingText('+10', Colors.green);
+      } else {
+        _score -= 10;
+        _showFloatingText('-10', Colors.red);
       }
+    });
+  }
+
+  void _showFloatingText(String text, Color color) {
+    final overlay = Overlay.of(context);
+    final overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: MediaQuery.of(context).size.height / 2 - 50,
+        left: MediaQuery.of(context).size.width / 2 - 50,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween(begin: 0.0, end: 1.0),
+          duration: const Duration(seconds: 1),
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: 1 - value,
+              child: Transform.translate(
+                offset: Offset(0, -value * 100),
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 48,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+
+    overlay.insert(overlayEntry);
+
+    Future.delayed(const Duration(seconds: 1), () {
+      overlayEntry.remove();
     });
   }
 
