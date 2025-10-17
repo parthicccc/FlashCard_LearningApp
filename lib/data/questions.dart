@@ -2,14 +2,14 @@ const questions = {
   'English Words': [
     {
       'question': 'What is the synonym of "happy"?',
-      'answers': ['Joyful', 'Sad', 'Angry', 'Tired'],
-      'correctAnswerIndex': 0,
+      'answers': [ 'Sad', 'Joyful', 'Angry', 'Tired'],
+      'correctAnswerIndex': 1,
       'points': 10,
     },
     {
       'question': 'What is the antonym of "big"?',
-      'answers': ['Small', 'Large', 'Huge', 'Giant'],
-      'correctAnswerIndex': 0,
+      'answers': ['Large', 'Huge', 'Giant', 'Small'],
+      'correctAnswerIndex': 3,
       'points': 10,
     },
     {

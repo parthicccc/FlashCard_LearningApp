@@ -1,6 +1,6 @@
-import 'package:flashcard_app/screens/loading_screen.dart';
+import 'package:flashcard_app/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flashcard_app/screens/topic_selection_screen.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() {
   runApp(const MyApp());
@@ -27,10 +27,71 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flashcard App',
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.deepPurple,
+        ).copyWith(
+          secondary: Colors.teal,
+        ),
+        scaffoldBackgroundColor: const Color(0xFFF5F5F5),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.deepPurple,
+          foregroundColor: Colors.white,
+          titleTextStyle: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.teal,
+            foregroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        primaryColor: Colors.deepPurple,
+        colorScheme: ColorScheme.fromSwatch(
+          brightness: Brightness.dark,
+          primarySwatch: Colors.deepPurple,
+        ).copyWith(
+          secondary: Colors.tealAccent,
+        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.grey[900],
+          foregroundColor: Colors.white,
+          titleTextStyle: GoogleFonts.poppins(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textTheme: GoogleFonts.poppinsTextTheme(
+          ThemeData.dark().textTheme.apply(
+            bodyColor: Colors.white,
+            displayColor: Colors.white,
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.tealAccent,
+            foregroundColor: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          ),
+        ),
+      ),
       themeMode: _themeMode,
-      home: LoadingScreen(toggleTheme: _toggleTheme),
+      home: SplashScreen(toggleTheme: _toggleTheme),
     );
   }
 }

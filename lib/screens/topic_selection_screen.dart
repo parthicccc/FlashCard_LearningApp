@@ -18,42 +18,58 @@ class TopicSelectionScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text('English Words'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const QuizScreen(topic: 'English Words'),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: const Text('Science Facts'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const QuizScreen(topic: 'Science Facts'),
-                ),
-              );
-            },
-          ),
-          ListTile(
-            title: const Text('Math Formulas'),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const QuizScreen(topic: 'Math Formulas'),
-                ),
-              );
-            },
-          ),
-        ],
+      body: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16.0,
+          mainAxisSpacing: 16.0,
+          children: [
+            _buildTopicCard(context, 'English Words', Icons.book, Colors.blue),
+            _buildTopicCard(
+                context, 'Science Facts', Icons.science, Colors.green),
+            _buildTopicCard(
+                context, 'Math Formulas', Icons.calculate, Colors.orange),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopicCard(
+      BuildContext context, String topic, IconData icon, Color color) {
+    return Card(
+      elevation: 4.0,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      color: color.withOpacity(0.8),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => QuizScreen(topic: topic),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 48.0, color: Colors.white),
+            const SizedBox(height: 16.0),
+            Text(
+              topic,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 16.0,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
       ),
     );
   }

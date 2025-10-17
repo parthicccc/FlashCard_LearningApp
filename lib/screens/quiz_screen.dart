@@ -15,12 +15,39 @@ class _QuizScreenState extends State<QuizScreen> {
   int _questionIndex = 0;
   int _score = 0;
   String? _selectedAnswer;
+  List<String> _shuffledAnswers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    final questionList = questions[widget.topic];
+    if (questionList == null || questionList.isEmpty) {
+      // If there are no questions, we can't shuffle answers.
+      // The build method will handle showing an appropriate message.
+      return;
+    }
+    _shuffleAnswers();
+  }
+
+  void _shuffleAnswers() {
+    final questionList = questions[widget.topic];
+    if (questionList == null || questionList.isEmpty) return;
+
+    final currentQuestion = questionList[_questionIndex] as Map<String, Object>;
+    final answers = List<String>.from(currentQuestion['answers'] as List<String>);
+    answers.shuffle();
+    _shuffledAnswers = answers;
+  }
 
   void _nextQuestion() {
-    if (_questionIndex < questions[widget.topic]!.length - 1) {
+    final questionList = questions[widget.topic];
+    if (questionList == null) return;
+
+    if (_questionIndex < questionList.length - 1) {
       setState(() {
         _questionIndex++;
         _selectedAnswer = null;
+        _shuffleAnswers();
       });
     } else {
       // Quiz finished
@@ -29,7 +56,7 @@ class _QuizScreenState extends State<QuizScreen> {
         MaterialPageRoute(
           builder: (context) => ResultScreen(
             score: _score,
-            totalQuestions: questions[widget.topic]!.length,
+            totalQuestions: questionList.length,
           ),
         ),
       );
@@ -37,9 +64,13 @@ class _QuizScreenState extends State<QuizScreen> {
   }
 
   void _selectAnswer(String answer) {
-    final currentQuestion = questions[widget.topic]![_questionIndex] as Map<String, Object>;
+    final questionList = questions[widget.topic];
+    if (questionList == null) return;
+
+    final currentQuestion = questionList[_questionIndex] as Map<String, Object>;
     final correctAnswerIndex = currentQuestion['correctAnswerIndex'] as int;
-    final correctAnswer = (currentQuestion['answers'] as List<String>)[correctAnswerIndex];
+    final correctAnswer =
+        (currentQuestion['answers'] as List<String>)[correctAnswerIndex];
 
     setState(() {
       _selectedAnswer = answer;
@@ -51,10 +82,24 @@ class _QuizScreenState extends State<QuizScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final currentQuestion = questions[widget.topic]![_questionIndex] as Map<String, Object>;
+    final questionList = questions[widget.topic];
+
+    if (questionList == null || questionList.isEmpty) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.topic),
+        ),
+        body: const Center(
+          child: Text('No questions available for this topic.'),
+        ),
+      );
+    }
+
+    final currentQuestion = questionList[_questionIndex] as Map<String, Object>;
     final correctAnswerIndex = currentQuestion['correctAnswerIndex'] as int;
-    final correctAnswer = (currentQuestion['answers'] as List<String>)[correctAnswerIndex];
-    final progress = (_questionIndex + 1) / questions[widget.topic]!.length;
+    final correctAnswer =
+        (currentQuestion['answers'] as List<String>)[correctAnswerIndex];
+    final progress = (_questionIndex + 1) / questionList.length;
 
     return Scaffold(
       appBar: AppBar(
@@ -69,15 +114,20 @@ class _QuizScreenState extends State<QuizScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text('Score: $_score', style: const TextStyle(fontSize: 18)),
+            Text('Score: $_score',
+                style: Theme.of(context).textTheme.headlineSmall),
             const SizedBox(height: 10),
-            Text(
-              currentQuestion['question'] as String,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+            Expanded(
+              child: Center(
+                child: Text(
+                  currentQuestion['question'] as String,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
-            ...(currentQuestion['answers'] as List<String>).map((answer) {
+            ..._shuffledAnswers.map((answer) {
               final isSelected = _selectedAnswer == answer;
               final isCorrect = answer == correctAnswer;
               Color? buttonColor;
@@ -88,17 +138,29 @@ class _QuizScreenState extends State<QuizScreen> {
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: GestureDetector(
-                  onTap: _selectedAnswer == null ? () => _selectAnswer(answer) : null,
+                  onTap:
+                      _selectedAnswer == null ? () => _selectAnswer(answer) : null,
                   child: AnimatedContainer(
                     duration: const Duration(milliseconds: 300),
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
-                      color: buttonColor ?? Colors.blue,
-                      borderRadius: BorderRadius.circular(8.0),
+                      color: buttonColor ??
+                          Theme.of(context).colorScheme.secondary,
+                      borderRadius: BorderRadius.circular(16.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4.0,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
                     ),
                     child: Text(
                       answer,
-                      style: const TextStyle(color: Colors.white),
+                      style: TextStyle(
+                        color: buttonColor != null ? Colors.white : Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.center,
                     ),
                   ),
