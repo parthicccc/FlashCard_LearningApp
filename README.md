@@ -1,6 +1,4 @@
-Here’s the **GitHub README-ready Markdown version** of your one-page process documentation:
 
----
 
 # FlashCard Learning App – Process Documentation
 
@@ -41,6 +39,4 @@ Students often face difficulty retaining concepts through traditional study meth
 
 A functional, user-friendly flashcard learning application that promotes effective learning through quizzes and instant feedback. It serves as a scalable base for future educational Flutter projects.
 
----
 
-Would you like me to add a **short "Getting Started" section** (setup and run instructions) below this for your GitHub README?
